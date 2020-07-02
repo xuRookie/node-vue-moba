@@ -50,7 +50,7 @@ export default {
     methods: {
         async handleGetParents() {
             try {
-                const list = await this.$http.get('/categories')
+                const list = await this.$http.get('/rest/categories')
                 this.parents = list
             } catch (error) {
                 console.log(error)
@@ -58,7 +58,7 @@ export default {
         },
         async handleGetDetails() {
             try {
-                const details = await this.$http.get(`/categories/${this.id}`)
+                const details = await this.$http.get(`/rest/categories/${this.id}`)
                 const { __v, ...res } = details
                 this.categoryForm = res
             } catch (error) {
@@ -70,9 +70,9 @@ export default {
             try {
                 let res = undefined
                 if (this.id) {
-                    res = await this.$http.put('/categories', this.categoryForm)
+                    res = await this.$http.put('/rest/categories', this.categoryForm)
                 } else {
-                    res = await this.$http.post('/categories', this.categoryForm)
+                    res = await this.$http.post('/rest/categories', this.categoryForm)
                 }
                 this.$message.success('保存成功')
                 this.$router.push('/categories/list')

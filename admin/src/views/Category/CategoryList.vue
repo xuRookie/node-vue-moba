@@ -26,7 +26,7 @@ export default {
     methods: {
         async handleGetList() {
             try {
-                const result = await this.$http.get('/categories');
+                const result = await this.$http.get('/rest/categories');
                 this.tableData = result;
             } catch (error) {
                 console.log("err", error);
@@ -42,7 +42,7 @@ export default {
                 type: 'warning'
             })
             .then(() => {
-                this.$http.delete(`/categories/${scope._id}`).then(() => {
+                this.$http.delete(`/rest/categories/${scope._id}`).then(() => {
                     this.$message.success('删除成功')
                     this.handleGetList()
                 })
