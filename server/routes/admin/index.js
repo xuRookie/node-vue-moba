@@ -1,5 +1,9 @@
 // 将类型大小写转换
 const inflection = require('inflection')
+const multer = require('multer')
+const stringRandom = require('string-random')
+
+const LETTER = 'abcdefghijklmnopqrstuvwxyz'
 
 module.exports = (app) => {
     const express = require('express')
@@ -46,4 +50,24 @@ module.exports = (app) => {
         req.modleName = modleName
         next()
     }, router)
+
+    const storage = multer.diskStorage({
+        //设置上传后文件路径
+        destination: function (req, file, cb) {
+            cb(null, __dirname + '/../../uploads')
+        },
+        //给上传文件重命名，获取添加后缀名
+        filename: function (req, file, cb) {
+            const fileFormat = (file.originalname).split(".");
+            const random = stringRandom(32, {letters: LETTER})
+            cb(null, random + "." + fileFormat[fileFormat.length - 1]);
+        }
+    });
+    const upload = multer({storage: storage})
+    // upload.single(file) 上传单个文件，文件名是 file
+    app.post('/admin/api/upload', upload.single('file'), async (req, res) => {
+        const file = req.file
+        file.url = `http://localhost:3300/uploads/${file.filename}`
+        res.send(file)
+    })
 }

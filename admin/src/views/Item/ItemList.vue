@@ -2,8 +2,12 @@
     <div class="item-list">
         <el-table :data="tableData" border style="width: 100%">
             <el-table-column prop="_id" label="ID" width="220"></el-table-column>
-            <el-table-column prop="parent.name" label="上级分类"></el-table-column>
-            <el-table-column prop="name" label="分类名称"></el-table-column>
+            <el-table-column prop="name" label="物品名称"></el-table-column>
+            <el-table-column prop="icon" label="物品图标">
+                <template slot-scope="scope">
+                    <img class="items-icon" :src="scope.row.icon" alt="icon">
+                </template>
+            </el-table-column>
             <el-table-column fixed="right" label="操作" width="120">
                 <template slot-scope="scope">
                     <el-button type="text" size="small" @click="handleEdit(scope.row)"><i class="el-icon-edit"></i>编辑</el-button>
@@ -26,14 +30,14 @@ export default {
     methods: {
         async handleGetList() {
             try {
-                const result = await this.$http.get('/rest/categories');
+                const result = await this.$http.get('/rest/items');
                 this.tableData = result;
             } catch (error) {
                 console.log("err", error);
             }
         },
         handleEdit(scope) {
-            this.$router.push(`/categories/edit/${scope._id}`);
+            this.$router.push(`/items/edit/${scope._id}`);
         },
         handleDelete(scope) {
             this.$confirm(`是否确定删除分类【${scope.name}】?`, '提示', {
@@ -42,7 +46,7 @@ export default {
                 type: 'warning'
             })
             .then(() => {
-                this.$http.delete(`/rest/categories/${scope._id}`).then(() => {
+                this.$http.delete(`/rest/items/${scope._id}`).then(() => {
                     this.$message.success('删除成功')
                     this.handleGetList()
                 })
@@ -55,4 +59,8 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.items-icon {
+    height: 3rem;
+    vertical-align: middle;
+}
 </style>

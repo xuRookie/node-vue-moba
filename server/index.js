@@ -2,6 +2,8 @@ const express = require('express')
 
 const app = express()
 
+app.use('/uploads', express.static(__dirname + '/uploads'))
+
 // app.all('*', function (req, res, next) {
 //     res.header('Access-Control-Allow-Origin', req.headers.origin);
 //     res.header('Access-Control-Allow-Headers', 'Content-Type,Content-Length, Authorization, Accept,X-Requested-With');
