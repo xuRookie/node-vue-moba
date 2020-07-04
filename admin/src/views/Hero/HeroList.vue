@@ -1,11 +1,12 @@
 <template>
-    <div class="item-list">
+    <div class="hero-list">
         <el-table :data="tableData" border style="width: 100%">
             <el-table-column prop="_id" label="ID" width="220"></el-table-column>
-            <el-table-column prop="name" label="物品名称"></el-table-column>
-            <el-table-column prop="icon" label="物品图标">
+            <el-table-column prop="name" label="英雄名称"></el-table-column>
+            <el-table-column prop="title" label="英雄称号"></el-table-column>
+            <el-table-column prop="avatar" label="英雄图标">
                 <template slot-scope="scope">
-                    <img class="items-icon" :src="scope.row.icon" alt="icon">
+                    <img class="heroes-avatar" :src="scope.row.avatar" alt="avatar">
                 </template>
             </el-table-column>
             <el-table-column fixed="right" label="操作" width="120">
@@ -30,23 +31,23 @@ export default {
     methods: {
         async handleGetList() {
             try {
-                const result = await this.$http.get('/rest/items');
+                const result = await this.$http.get('/rest/heroes');
                 this.tableData = result;
             } catch (error) {
                 this.$message.error(error.statusText || '列表获取失败')
             }
         },
         handleEdit(scope) {
-            this.$router.push(`/items/edit/${scope._id}`);
+            this.$router.push(`/heroes/edit/${scope._id}`);
         },
         handleDelete(scope) {
-            this.$confirm(`是否确定删除分类【${scope.name}】?`, '提示', {
+            this.$confirm(`是否确定删除英雄【${scope.name}】?`, '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             })
             .then(() => {
-                this.$http.delete(`/rest/items/${scope._id}`).then(() => {
+                this.$http.delete(`/rest/heroes/${scope._id}`).then(() => {
                     this.$message.success('删除成功')
                     this.handleGetList()
                 })
@@ -59,7 +60,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.items-icon {
+.heroes-avatar {
     height: 3rem;
     vertical-align: middle;
 }

@@ -6,7 +6,7 @@
                 <el-button class="btn-back" v-if="id" type="text" @click="handleBack">返回</el-button>
             </div>
             <el-form :model="categoryForm" ref="categoryForm" label-width="120px" @submit.native.prevent="handleSubmit">
-                <el-form-item label="上级分类" props="parent">
+                <el-form-item label="上级分类" prop="parent">
                     <el-select v-model="categoryForm.parent">
                         <el-option
                             v-for="item in parents"
@@ -17,7 +17,7 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="名称" props="name">
+                <el-form-item label="名称" prop="name">
                     <el-input v-model="categoryForm.name"></el-input>
                 </el-form-item>
                 <el-form-item>
@@ -53,35 +53,32 @@ export default {
                 const list = await this.$http.get('/rest/categories')
                 this.parents = list
             } catch (error) {
-                console.log(error)
+                this.$message.error(error.statusText || '分类获取失败')
             }
         },
         async handleGetDetails() {
             try {
                 const details = await this.$http.get(`/rest/categories/${this.id}`)
-                const { __v, ...res } = details
-                this.categoryForm = res
+                this.categoryForm = Object.assign({}, this.categoryForm, details)
             } catch (error) {
-                console.log(error)
+                this.$message.error(error.statusText || '分类详情获取失败')
             }
         },
         // 表单提交
         async handleSubmit() {
             try {
-                let res = undefined
                 if (this.id) {
-                    res = await this.$http.put('/rest/categories', this.categoryForm)
+                    await this.$http.put('/rest/categories', this.categoryForm)
                 } else {
-                    res = await this.$http.post('/rest/categories', this.categoryForm)
+                    await this.$http.post('/rest/categories', this.categoryForm)
                 }
                 this.$message.success('保存成功')
                 this.$router.push('/categories/list')
             } catch (error) {
-                console.log(error)
+                this.$message.error(error.statusText || '分类保存失败')
             }
         },
         handleReset() {
-            console.log('111')
             for (let key in this.categoryForm) {
                 this.categoryForm[key] = ''
             }
@@ -91,7 +88,7 @@ export default {
         }
     },
     watch: {
-        '$route': function(newValue) {
+        '$route': function() {
             if (!this.id) this.handleReset()
         }
     }

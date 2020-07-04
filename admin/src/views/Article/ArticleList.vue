@@ -1,13 +1,8 @@
 <template>
-    <div class="item-list">
+    <div class="article-list">
         <el-table :data="tableData" border style="width: 100%">
             <el-table-column prop="_id" label="ID" width="220"></el-table-column>
-            <el-table-column prop="name" label="物品名称"></el-table-column>
-            <el-table-column prop="icon" label="物品图标">
-                <template slot-scope="scope">
-                    <img class="items-icon" :src="scope.row.icon" alt="icon">
-                </template>
-            </el-table-column>
+            <el-table-column prop="title" label="文章标题"></el-table-column>
             <el-table-column fixed="right" label="操作" width="120">
                 <template slot-scope="scope">
                     <el-button type="text" size="small" @click="handleEdit(scope.row)"><i class="el-icon-edit"></i>编辑</el-button>
@@ -30,23 +25,23 @@ export default {
     methods: {
         async handleGetList() {
             try {
-                const result = await this.$http.get('/rest/items');
+                const result = await this.$http.get('/rest/articles');
                 this.tableData = result;
             } catch (error) {
-                this.$message.error(error.statusText || '列表获取失败')
+                this.$message.error(error.statusText || '文章列表获取失败')
             }
         },
         handleEdit(scope) {
-            this.$router.push(`/items/edit/${scope._id}`);
+            this.$router.push(`/articles/edit/${scope._id}`);
         },
         handleDelete(scope) {
-            this.$confirm(`是否确定删除分类【${scope.name}】?`, '提示', {
+            this.$confirm(`是否确定删除文章【${scope.title}】?`, '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             })
             .then(() => {
-                this.$http.delete(`/rest/items/${scope._id}`).then(() => {
+                this.$http.delete(`/rest/articles/${scope._id}`).then(() => {
                     this.$message.success('删除成功')
                     this.handleGetList()
                 })
@@ -59,8 +54,4 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.items-icon {
-    height: 3rem;
-    vertical-align: middle;
-}
 </style>

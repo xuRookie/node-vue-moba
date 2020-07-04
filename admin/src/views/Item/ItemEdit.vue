@@ -8,20 +8,9 @@
             <el-form
                 :model="itemForm"
                 ref="itemForm"
-                label-width="120px"
+                label-width="68px"
                 @submit.native.prevent="handleSubmit"
             >
-                <!-- <el-form-item label="上级分类" props="parent">
-                    <el-select v-model="itemForm.parent">
-                        <el-option
-                            v-for="item in parents"
-                            :key="item._id"
-                            :label="item.name"
-                            :value="item._id"
-                        >
-                        </el-option>
-                    </el-select>
-                </el-form-item>-->
                 <el-form-item label="名称" props="name">
                     <el-input v-model="itemForm.name"></el-input>
                 </el-form-item>
@@ -60,54 +49,42 @@ export default {
         };
     },
     created() {
-        // this.handleGetParents()
         this.id && this.handleGetDetails();
     },
     methods: {
-        async handleGetParents() {
-            try {
-                const list = await this.$http.get("/rest/items");
-                this.parents = list;
-            } catch (error) {
-                console.log(error);
-            }
-        },
         async handleGetDetails() {
             try {
                 const details = await this.$http.get(`/rest/items/${this.id}`);
-                const { __v, ...res } = details;
-                this.itemForm = res;
+                this.itemForm = Object.assign({}, this.itemForm, details)
             } catch (error) {
-                console.log(error);
+                this.$message.error(error.statusText || '详情获取失败')
             }
         },
         // 表单提交
         async handleSubmit() {
             try {
-                let res = undefined;
                 if (this.id) {
-                    res = await this.$http.put("/rest/items", this.itemForm);
+                    await this.$http.put("/rest/items", this.itemForm);
                 } else {
-                    res = await this.$http.post("/rest/items", this.itemForm);
+                    await this.$http.post("/rest/items", this.itemForm);
                 }
                 this.$message.success("保存成功");
                 this.$router.push("/items/list");
             } catch (error) {
-                console.log(error);
+                this.$message.error(error.statusText || '保存失败')
             }
         },
-        handleAvatarSuccess(res, file) {
-            console.log('res', res)
+        handleAvatarSuccess(res) {
             this.itemForm.icon = res.url
-            // this.itemForm.icon = URL.createObjectURL(file.raw);
         },
         beforeAvatarUpload(file) {
-            // const isJPG = file.type === "image/jpeg";
+            const reg = /(png|jpg|gif|jpeg|webp)$/
             const isLt5M = file.size / 1024 / 1024 < 5;
 
-            // if (!isJPG) {
-            //     this.$message.error("上传头像图片只能是 JPG 格式!");
-            // }
+            if (!reg.test(file.type)) {
+                this.$message.error("上传图片格式错误！");
+                return false
+            }
             if (!isLt5M) {
                 this.$message.error("上传头像图片大小不能超过 5MB!");
             }
@@ -123,7 +100,7 @@ export default {
         }
     },
     watch: {
-        $route: function(newValue) {
+        $route: function() {
             if (!this.id) this.handleReset();
         }
     }
@@ -133,28 +110,5 @@ export default {
 .btn-back {
     float: right;
     padding: 3px 0;
-}
-.avatar-uploader /deep/ .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-}
-.avatar-uploader .el-upload:hover {
-    border-color: #409eff;
-}
-.avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 54px;
-    height: 54px;
-    line-height: 54px;
-    text-align: center;
-}
-.avatar {
-    width: 54px;
-    height: 54px;
-    display: block;
 }
 </style>

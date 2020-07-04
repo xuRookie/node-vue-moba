@@ -1,5 +1,5 @@
 <template>
-    <div class="item-list">
+    <div class="category-list">
         <el-table :data="tableData" border style="width: 100%">
             <el-table-column prop="_id" label="ID" width="220"></el-table-column>
             <el-table-column prop="parent.name" label="上级分类"></el-table-column>
@@ -29,7 +29,7 @@ export default {
                 const result = await this.$http.get('/rest/categories');
                 this.tableData = result;
             } catch (error) {
-                console.log("err", error);
+                this.$message.error(error.statusText || '分类列表获取失败')
             }
         },
         handleEdit(scope) {
@@ -47,7 +47,7 @@ export default {
                     this.handleGetList()
                 })
                 .catch(error => {
-                    console.log("err", error);
+                    this.$message.error(error.statusText || '删除失败')
                 })
             })
         }
