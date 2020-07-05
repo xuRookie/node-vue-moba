@@ -3,56 +3,56 @@
         <div class="login-wrap">
             <div class="login-html">
                 <input id="tab-1" type="radio" name="tab" class="sign-in" checked />
-                <label for="tab-1" class="tab">Sign In</label>
+                <label for="tab-1" class="tab">登录</label>
                 <input id="tab-2" type="radio" name="tab" class="sign-up" />
-                <label for="tab-2" class="tab">Sign Up</label>
+                <label for="tab-2" class="tab">注册</label>
                 <div class="login-form">
                     <div class="sign-in-htm">
                         <div class="group">
-                            <label for="user" class="label">Username</label>
-                            <input id="user" type="text" class="input" />
+                            <label for="user" class="label">用户名</label>
+                            <input id="user" type="text" class="input" v-model="model.username" />
                         </div>
                         <div class="group">
-                            <label for="pass" class="label">Password</label>
-                            <input id="pass" type="password" class="input" data-type="password" />
+                            <label for="pass" class="label">密码</label>
+                            <input id="pass" type="password" class="input" v-model="model.password"  data-type="password" />
                         </div>
                         <div class="group">
-                            <input id="check" type="checkbox" class="check" checked />
+                            <input id="check" type="checkbox" class="check" @change="changeChecked" :checked="isChecked" />
                             <label for="check">
-                                <span class="icon"></span> Keep me Signed in
+                                <span class="icon"></span> 记住密码
                             </label>
                         </div>
                         <div class="group">
-                            <input type="submit" class="button" value="Sign In" />
+                            <input type="submit" @click="login" class="button" value="登录" />
                         </div>
                         <div class="hr"></div>
                         <div class="foot-lnk">
-                            <a href="#forgot">Forgot Password?</a>
+                            <a href="#forgot">忘记密码?</a>
                         </div>
                     </div>
                     <div class="sign-up-htm">
                         <div class="group">
-                            <label for="user" class="label">Username</label>
-                            <input id="user" type="text" class="input" />
+                            <label for="username" class="label">用户名</label>
+                            <input id="username" type="text" class="input" />
                         </div>
                         <div class="group">
-                            <label for="pass" class="label">Password</label>
-                            <input id="pass" type="password" class="input" data-type="password" />
+                            <label for="password" class="label">密码</label>
+                            <input id="password" type="password" class="input" data-type="password" />
                         </div>
                         <div class="group">
-                            <label for="pass" class="label">Repeat Password</label>
-                            <input id="pass" type="password" class="input" data-type="password" />
+                            <label for="repeatPassword" class="label">确认密码</label>
+                            <input id="repeatPassword" type="password" class="input" data-type="password" />
                         </div>
                         <div class="group">
-                            <label for="pass" class="label">Email Address</label>
-                            <input id="pass" type="text" class="input" />
+                            <label for="email" class="label">邮箱</label>
+                            <input id="email" type="text" class="input" />
                         </div>
                         <div class="group">
-                            <input type="submit" class="button" value="Sign Up" />
+                            <input type="submit" @click="signUp" class="button" value="注册" />
                         </div>
                         <div class="hr"></div>
                         <div class="foot-lnk">
-                            <label for="tab-1">Already Member?</label>
+                            <label for="tab-1">已经注册?</label>
                         </div>
                     </div>
                 </div>
@@ -66,21 +66,61 @@
 <script>
 export default {
     data() {
+        let keepPassword = localStorage.getItem('keepPassword')
+        keepPassword = keepPassword == 'true' ? true : false
         return {
+            model: {
+                username: '',
+                password: ''
+            },
+            isChecked: keepPassword,
             starsCount: 800, //数量
             distance: 600 //间距
         };
     },
     mounted() {
-        let starArr = this.$refs.star;
-        starArr.forEach(item => {
-            var speed = 0.2 + Math.random() * 1;
-            var distance = this.distance + Math.random() * 300;
-            item.style.transformOrigin = `0 0 ${distance}px`;
-            item.style.transform = `translate3d(0,0,-${distance}px) rotateY(${Math.random() *
-                360}deg) rotateX(${Math.random() *
-                -50}deg) scale(${speed},${speed})`;
-        });
+        const userInfo = JSON.parse(localStorage.getItem('user'))
+        const keepPassword = localStorage.getItem('keepPassword')
+        if (userInfo && keepPassword) {
+            this.model = Object.assign({}, this.model, userInfo)
+        }
+        this.initStar()
+    },
+    methods: {
+        initStar() {
+            let starArr = this.$refs.star;
+            starArr.forEach(item => {
+                var speed = 0.2 + Math.random() * 1;
+                var distance = this.distance + Math.random() * 300;
+                item.style.transformOrigin = `0 0 ${distance}px`;
+                item.style.transform = `translate3d(0,0,-${distance}px) rotateY(${Math.random() *
+                    360}deg) rotateX(${Math.random() *
+                    -50}deg) scale(${speed},${speed})`;
+            });
+        },
+        changeChecked(event) {
+            this.isChecked = event.target.checked
+            localStorage.setItem('keepPassword', this.isChecked)
+        },
+        login() {
+            this.$http.post('login', this.model).then(res => {
+                const {token} = res
+                if (this.isChecked) {
+                    localStorage.setItem('user', JSON.stringify(this.model))
+                } else {
+                    localStorage.removeItem('user')
+                }
+                localStorage.setItem('token', token)
+                this.$message.success('登录成功')
+                this.$router.push('/')
+            }).catch(error => {
+                const {data} = error
+                this.$message.error(data && data.message || '登录失败')
+            })
+        },
+        signUp() {
+
+        }
     }
 };
 </script>
@@ -194,6 +234,7 @@ button {
 
 .login-form .group .button {
     background: #1161ee;
+    cursor: pointer;
 }
 
 .login-form .group label .icon {

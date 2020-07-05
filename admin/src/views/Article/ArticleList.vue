@@ -28,7 +28,8 @@ export default {
                 const result = await this.$http.get('/rest/articles');
                 this.tableData = result;
             } catch (error) {
-                this.$message.error(error.statusText || '文章列表获取失败')
+                const {message} = error.data
+                this.$message.error(message || error.statusText || '文章列表获取失败')
             }
         },
         handleEdit(scope) {
@@ -46,7 +47,8 @@ export default {
                     this.handleGetList()
                 })
                 .catch(error => {
-                    this.$message.error(error.statusText || '删除失败')
+                    const {message} = error.data
+                    this.$message.error(message || error.statusText || '删除失败')
                 })
             })
         }

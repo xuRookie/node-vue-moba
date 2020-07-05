@@ -17,8 +17,9 @@
                 <el-form-item label="图标" props="icon">
                     <el-upload
                         class="avatar-uploader"
-                        :action="$http.defaults.baseURL + '/upload'"
+                        :action="uploadUrl"
                         :show-file-list="false"
+                        :headers="getAuthorization()"
                         :on-success="handleAvatarSuccess"
                         :before-upload="beforeAvatarUpload"
                     >
@@ -57,7 +58,8 @@ export default {
                 const details = await this.$http.get(`/rest/items/${this.id}`);
                 this.itemForm = Object.assign({}, this.itemForm, details)
             } catch (error) {
-                this.$message.error(error.statusText || '详情获取失败')
+                const {message} = error.data
+                this.$message.error(message || error.statusText || '详情获取失败')
             }
         },
         // 表单提交
@@ -71,7 +73,8 @@ export default {
                 this.$message.success("保存成功");
                 this.$router.push("/items/list");
             } catch (error) {
-                this.$message.error(error.statusText || '保存失败')
+                const {message} = error.data
+                this.$message.error(message || error.statusText || '保存失败')
             }
         },
         handleAvatarSuccess(res) {

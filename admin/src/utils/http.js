@@ -1,4 +1,5 @@
 import axios from 'axios'
+import router from '../router'
 
 const http = axios.create({
     baseURL: 'http://localhost:3300/admin/api',
@@ -8,7 +9,10 @@ const http = axios.create({
 
 // 请求拦截器
 http.interceptors.request.use(function (config) {
-    // 在发送请求之前做些什么
+    const token = localStorage.getItem('token')
+    if (token) {
+        config.headers.Authorization = 'Bearer ' + token
+    }
     return config;
 }, function (error) {
     return Promise.reject(error);
@@ -18,7 +22,11 @@ http.interceptors.request.use(function (config) {
 http.interceptors.response.use(function (response) {
     return response.data;
 }, function (error) {
-    return Promise.reject(error);
+    const response = error.response
+    if (response.status == 401) {
+        router.push('/login')
+    }
+    return Promise.reject(error.response);
 });
 
 export default http

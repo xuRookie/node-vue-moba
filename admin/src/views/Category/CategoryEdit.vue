@@ -53,7 +53,8 @@ export default {
                 const list = await this.$http.get('/rest/categories')
                 this.parents = list
             } catch (error) {
-                this.$message.error(error.statusText || '分类获取失败')
+                const {message} = error.data
+                this.$message.error(message || error.statusText || '分类获取失败')
             }
         },
         async handleGetDetails() {
@@ -61,7 +62,8 @@ export default {
                 const details = await this.$http.get(`/rest/categories/${this.id}`)
                 this.categoryForm = Object.assign({}, this.categoryForm, details)
             } catch (error) {
-                this.$message.error(error.statusText || '分类详情获取失败')
+                const {message} = error.data
+                this.$message.error(message || error.statusText || '分类详情获取失败')
             }
         },
         // 表单提交
@@ -75,7 +77,8 @@ export default {
                 this.$message.success('保存成功')
                 this.$router.push('/categories/list')
             } catch (error) {
-                this.$message.error(error.statusText || '分类保存失败')
+                const {message} = error.data
+                this.$message.error(message || error.statusText || '分类保存失败')
             }
         },
         handleReset() {

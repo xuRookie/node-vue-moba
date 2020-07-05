@@ -64,7 +64,8 @@ export default {
                 const list = await this.$http.get('/rest/categories')
                 this.categories = list
             } catch (error) {
-                this.$message.error(error.statusText || '分类获取失败')
+                const {message} = error.data
+                this.$message.error(message || error.statusText || '分类获取失败')
             }
         },
         async handleGetDetails() {
@@ -72,7 +73,8 @@ export default {
                 const details = await this.$http.get(`/rest/articles/${this.id}`)
                 this.articleForm = Object.assign({}, this.articleForm, details)
             } catch (error) {
-                this.$message.error(error.statusText || '文章详情获取失败')
+                const {message} = error.data
+                this.$message.error(message || error.statusText || '文章详情获取失败')
             }
         },
         async handleImageAdded(file, Editor, cursorLocation, resetUploader) {
@@ -84,7 +86,8 @@ export default {
                 Editor.insertEmbed(cursorLocation, "image", res.url);
                 resetUploader();
             } catch (error) {
-                this.$message.error(error.statusText || '图片上传失败')
+                const {message} = error.data
+                this.$message.error(message || error.statusText || '图片上传失败')
             }
         },
         // 表单提交
@@ -98,7 +101,8 @@ export default {
                 this.$message.success('保存成功')
                 this.$router.push('/articles/list')
             } catch (error) {
-                this.$message.error(error.statusText || '文章保存失败')
+                const {message} = error.data
+                this.$message.error(message || error.statusText || '文章保存失败')
             }
         },
         handleReset() {

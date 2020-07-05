@@ -2,6 +2,7 @@ const express = require('express')
 
 const app = express()
 
+app.set('secret', 'private.key')
 app.use('/uploads', express.static(__dirname + '/uploads'))
 
 // app.all('*', function (req, res, next) {
@@ -27,6 +28,12 @@ app.use(express.json())
 require('./plugins/db')(app)
 require('./routes/admin')(app)
 
+// 错误处理
+app.use(async (err, req, res, next) => {
+    res.status(err.statusCode || 500).send({
+        message: err.message
+    })
+})
 
 app.listen(3300, () => {
     console.log('服务器已启动，端口：3300...')

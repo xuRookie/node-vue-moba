@@ -29,7 +29,8 @@ export default {
                 const result = await this.$http.get('/rest/categories');
                 this.tableData = result;
             } catch (error) {
-                this.$message.error(error.statusText || '分类列表获取失败')
+                const {message} = error.data
+                this.$message.error(message || error.statusText || '分类列表获取失败')
             }
         },
         handleEdit(scope) {
@@ -47,7 +48,8 @@ export default {
                     this.handleGetList()
                 })
                 .catch(error => {
-                    this.$message.error(error.statusText || '删除失败')
+                    const {message} = error.data
+                    this.$message.error(message || error.statusText || '删除失败')
                 })
             })
         }

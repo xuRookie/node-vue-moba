@@ -21,8 +21,9 @@
                             <el-form-item label="图标" class="mt-2">
                                 <el-upload
                                     class="avatar-uploader"
-                                    :action="$http.defaults.baseURL + '/upload'"
+                                    :action="uploadUrl"
                                     :show-file-list="false"
+                                    :headers="getAuthorization()"
                                     :on-success="res => ($set(item, 'image', res.url))"
                                     :before-upload="beforeAvatarUpload"
                                 >
@@ -67,7 +68,8 @@ export default {
                 const details = await this.$http.get(`/rest/ads/${this.id}`)
                 this.advertForm = Object.assign({}, this.advertForm, details)
             } catch (error) {
-                this.$message.error(error.statusText || '广告位详情获取失败')
+                const {message} = error.data
+                this.$message.error(message || error.statusText || '广告位详情获取失败')
             }
         },
         beforeAvatarUpload(file) {
@@ -100,7 +102,8 @@ export default {
                 this.$message.success('保存成功')
                 this.$router.push('/ads/list')
             } catch (error) {
-                this.$message.error(error.statusText || '广告位保存失败')
+                const {message} = error.data
+                this.$message.error(message || error.statusText || '广告位保存失败')
             }
         },
         handleReset() {

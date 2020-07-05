@@ -11,6 +11,22 @@ Vue.use(ElementUI)
 Vue.config.productionTip = false
 Vue.prototype.$http = http
 
+Vue.mixin({
+    computed: {
+        uploadUrl() {
+            return this.$http.defaults.baseURL + '/upload'
+        }
+    },
+    methods: {
+        getAuthorization() {
+            const token = localStorage.getItem('token')
+            return {
+                Authorization: `Bearer ${token || ''}`
+            }
+        }
+    }
+})
+
 new Vue({
   router,
   render: h => h(App)

@@ -19,8 +19,9 @@
                         <el-form-item label="头像" prop="avatar">
                             <el-upload
                                 class="avatar-uploader"
-                                :action="$http.defaults.baseURL + '/upload'"
+                                :action="uploadUrl"
                                 :show-file-list="false"
+                                :headers="getAuthorization()"
                                 :on-success="handleAvatarSuccess"
                                 :before-upload="beforeAvatarUpload"
                             >
@@ -89,8 +90,9 @@
                                 <el-form-item label="图标">
                                     <el-upload
                                         class="avatar-uploader"
-                                        :action="$http.defaults.baseURL + '/upload'"
+                                        :action="uploadUrl"
                                         :show-file-list="false"
+                                        :headers="getAuthorization()"
                                         :on-success="res => ($set(item, 'icon', res.url))"
                                         :before-upload="beforeAvatarUpload"
                                     >
@@ -161,7 +163,8 @@ export default {
                 const details = await this.$http.get(`/rest/heroes/${this.id}`);
                 this.heroForm = Object.assign({}, this.heroForm, details);
             } catch (error) {
-                this.$message.error(error.statusText || '英雄详情获取失败')
+                const {message} = error.data
+                this.$message.error(message || error.statusText || '英雄详情获取失败')
             }
         },
         async handleGetCategory() {
@@ -169,7 +172,8 @@ export default {
                 const category = await this.$http.get('/rest/categories')
                 this.categories = category
             } catch (error) {
-                this.$message.error(error.statusText || '英雄分类获取失败')
+                const {message} = error.data
+                this.$message.error(message || error.statusText || '英雄分类获取失败')
             }
         },
         async handleGetItems() {
@@ -177,7 +181,8 @@ export default {
                 const result = await this.$http.get('/rest/items')
                 this.items = result
             } catch (error) {
-                this.$message.error(error.statusText || '物品获取失败')
+                const {message} = error.data
+                this.$message.error(message || error.statusText || '物品获取失败')
             }
         },
         handleAddSkills() {
@@ -197,7 +202,8 @@ export default {
                 this.$message.success("保存成功");
                 this.$router.push("/heroes/list");
             } catch (error) {
-                this.$message.error(error.statusText || '保存失败')
+                const {message} = error.data
+                this.$message.error(message || error.statusText || '保存失败')
             }
         },
         handleAvatarSuccess(res) {
