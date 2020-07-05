@@ -110,6 +110,7 @@ export default {
                 } else {
                     localStorage.removeItem('user')
                 }
+                localStorage.setItem('username', this.model.username)
                 localStorage.setItem('token', token)
                 this.$message.success('登录成功')
                 this.$router.push('/')

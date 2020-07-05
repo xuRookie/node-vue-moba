@@ -52,15 +52,16 @@
 
         <el-container>
             <el-header>
-                <el-dropdown>
-                    <i class="el-icon-setting" style="margin-right: 15px"></i>
+                <el-dropdown @command="handleCommand" trigger="click">
+                    <span class="el-dropdown-link">
+                    <i class="el-icon-setting" style="margin-right: 5px"></i><span>{{username}}</span>
+                    </span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>查看</el-dropdown-item>
-                        <el-dropdown-item>新增</el-dropdown-item>
-                        <el-dropdown-item>删除</el-dropdown-item>
+                        <el-dropdown-item command="userInfo">个人信息</el-dropdown-item>
+                        <el-dropdown-item command="logout">退出</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
-                <span>王小虎</span>
+
             </el-header>
 
             <el-main>
@@ -73,8 +74,21 @@
 export default {
     data() {
         return {
-            openMenus: ['1']
+            openMenus: ['1'],
+            username: ''
         };
+    },
+    mounted () {
+        this.username = localStorage.getItem('username')
+    },
+    methods: {
+        handleCommand(command) {
+            if (command == 'logout') {
+                localStorage.removeItem('token')
+                localStorage.removeItem('username')
+                this.$router.push('/login')
+            }
+        }
     }
 };
 </script>
