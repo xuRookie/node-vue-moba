@@ -37,12 +37,14 @@
         <m-list-card icon="iconcc-menu-circle" title="新闻咨询" :categories="newsList">
             <!-- // 父组件拿子组件中slot内容 -->
             <template #items="{category}">
-                <div class="py-2 fs-lg d-flex" v-for="(item, index) in category.newsList" :key="index">
+                <router-link tag="div"
+                    :to="`/articles/${item._id}`"
+                    class="py-2 fs-lg d-flex" v-for="(item, index) in category.newsList" :key="index">
                     <span class="text-info">[{{item.categoryName}}]</span>
                     <span class="px-2">|</span>
                     <span class="flex-1 text-dark-1 text-ellipsis pr-2">{{item.title}}</span>
                     <span class="text-grey-1 fs-sm">{{item.createdAt | date}}</span>
-                </div>
+                </router-link>
             </template>
         </m-list-card>
 
@@ -50,12 +52,14 @@
             <!-- // 父组件拿子组件中slot内容 -->
             <template #items="{category}">
                 <div class="d-flex flex-wrap" style="margin: 0 -0.5rem;">
-                    <div class="p-2 text-center"
+                    <router-link tag="div"
+                        class="p-2 text-center"
                         style="width: 20%"
+                        :to="`/heroes/${item._id}`"
                         v-for="(item, index) in category.heroList" :key="index">
                         <img :src="item.avatar" alt="avatar" class="w-100">
                         <div>{{item.name}}</div>
-                    </div>
+                    </router-link>
                 </div>
             </template>
         </m-list-card>
@@ -64,10 +68,8 @@
 </template>
 <script>
 import dayjs from 'dayjs'
-import MCard from '@/components/Card.vue'
+// import MCard from '@/components/Card.vue'
 import MListCard from '@/components/ListCard.vue'
-import Swiper from 'swiper'
-import 'swiper/dist/css/swiper.css'
 
 export default {
     data () {
@@ -96,7 +98,7 @@ export default {
         }
     },
     components: {
-        MCard,
+        // MCard,
         MListCard
     },
     computed: {
@@ -112,13 +114,7 @@ export default {
         }
     },
     mounted () {
-        new Swiper ('.swiper-container', {
-            loop: true,
-            // autoplay: true,
-            pagination: {
-                el: '.swiper-pagination',
-            }
-        })
+
     },
     methods: {
         async handleGetNewsCats() {

@@ -43,7 +43,6 @@ module.exports = (app) => {
     // 修改资源
     router.put('/', async (req, res, next) => {
         // const model = await Category.findOneAndUpdate({_id: req.body._id}, {$set: {name: req.body.name, parent: req.body.parent}})
-        console.log(req.body)
         try {
             const model = await req.Model.findByIdAndUpdate(req.body._id, req.body)
             res.send(model)

@@ -29,6 +29,19 @@
                                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                             </el-upload>
                         </el-form-item>
+                        <el-form-item label="封面" prop="banner">
+                            <el-upload
+                                class="avatar-uploader"
+                                :action="uploadUrl"
+                                :show-file-list="false"
+                                :headers="getAuthorization()"
+                                :on-success="res => $set(heroForm, 'banner', res.url)"
+                                :before-upload="beforeAvatarUpload"
+                            >
+                                <img v-if="heroForm.banner" :src="heroForm.banner" class="avatar" />
+                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
+                        </el-form-item>
                         <el-form-item label="称号" prop="title">
                             <el-input v-model="heroForm.title"></el-input>
                         </el-form-item>
@@ -87,6 +100,12 @@
                                 <el-form-item label="名称">
                                     <el-input v-model="item.name"></el-input>
                                 </el-form-item>
+                                <el-form-item label="冷却值">
+                                    <el-input v-model="item.delay"></el-input>
+                                </el-form-item>
+                                <el-form-item label="消耗">
+                                    <el-input v-model="item.cost"></el-input>
+                                </el-form-item>
                                 <el-form-item label="图标">
                                     <el-upload
                                         class="avatar-uploader"
@@ -112,6 +131,29 @@
                             </el-col>
                         </el-row>
                     </el-tab-pane>
+                    <el-tab-pane label="最佳搭档" name="partners">
+                        <el-button type="primary" size="small" icon="el-icon-plus" @click="heroForm.partners.push({})">添加英雄</el-button>
+                        <el-row type="flex" class="mt-2" style="flex-wrap: wrap">
+                            <el-col :span="12" v-for="(item, index) in heroForm.partners"
+                                :key="index"
+                                class="b-dashed mb-1">
+                                <el-form-item label="英雄">
+                                    <el-select filterable v-model="item.hero">
+                                        <el-option v-for="hero in heroes"
+                                            :key="hero._id"
+                                            :value="hero._id"
+                                            :label="hero.name"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                                <el-form-item label="描述">
+                                    <el-input type="textarea" :autosize="{ minRows: 3 }" v-model="item.description"></el-input>
+                                </el-form-item>
+                                <el-form-item>
+                                    <el-button type="danger" size="small" @click="handleDeleteHero(index)">删除</el-button>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-tab-pane>
                 </el-tabs>
                 <el-form-item class="mt-2">
                     <el-button type="primary" native-type="submit">保存</el-button>
@@ -132,9 +174,11 @@ export default {
             categories: [],
             items: [],
             activeName: 'basic',
+            heroes: [],
             heroForm: {
                 name: '',
                 title: '',
+                banner: '',
                 categories: [],
                 scores: {
                     difficult: 0,
@@ -148,7 +192,8 @@ export default {
                 usageTips: '',
                 battleTips: '',
                 teamTips: '',
-                avatar: ''
+                avatar: '',
+                partners: []
             }
         };
     },
@@ -156,6 +201,7 @@ export default {
         this.id && this.handleGetDetails();
         this.handleGetCategory()
         this.handleGetItems()
+        this.handleGetHeroes()
     },
     methods: {
         async handleGetDetails() {
@@ -185,11 +231,23 @@ export default {
                 this.$message.error(message || error.statusText || '物品获取失败')
             }
         },
+        async handleGetHeroes() {
+            try {
+                const result = await this.$http.get('/rest/heroes')
+                this.heroes = result
+            } catch (error) {
+                const {message} = error.data
+                this.$message.error(message || error.statusText || '英雄获取失败')
+            }
+        },
         handleAddSkills() {
             this.heroForm.skills.push({})
         },
         handleDeleteSkill(index) {
             this.heroForm.skills.splice(index, 1)
+        },
+        handleDeleteHero(index) {
+            this.heroForm.partners.splice(index, 1)
         },
         // 表单提交
         async handleSubmit() {
