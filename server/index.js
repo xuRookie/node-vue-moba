@@ -3,6 +3,8 @@ const express = require('express')
 const app = express()
 
 app.set('secret', 'private.key')
+app.use('/admin', express.static(__dirname + '/public/admin'))
+app.use('/web', express.static(__dirname + '/public/web'))
 app.use('/uploads', express.static(__dirname + '/uploads'))
 
 // app.all('*', function (req, res, next) {
