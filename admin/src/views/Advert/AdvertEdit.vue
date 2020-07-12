@@ -106,18 +106,8 @@ export default {
                 this.$message.error(message || error.statusText || '广告位保存失败')
             }
         },
-        handleReset() {
-            for (let key in this.advertForm) {
-                this.advertForm[key] = ''
-            }
-        },
         handleBack() {
             this.$router.go(-1)
-        }
-    },
-    watch: {
-        '$route': function() {
-            if (!this.id) this.handleReset()
         }
     }
 }

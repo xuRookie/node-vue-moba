@@ -1,7 +1,7 @@
 <template>
     <div class="card p-3 mt-3 bg-white">
         <div class="card-header d-flex pb-3">
-            <i :class="`iconfont iconcc-${icon}`"></i>
+            <i :class="`iconfont ${icon}`"></i>
             <div class="flex-1 px-2">{{title}}</div>
             <i class="iconfont iconellipsis"></i>
         </div>

@@ -34,76 +34,38 @@
             </div>
         </div>
 
-        <m-card icon="menu-circle" title="新闻咨询">
-            <div class="nav jc-between">
-                <div class="nav-item active">
-                    <div class="nav-link">热门</div>
+        <m-list-card icon="iconcc-menu-circle" title="新闻咨询" :categories="newsList">
+            <!-- // 父组件拿子组件中slot内容 -->
+            <template #items="{category}">
+                <div class="py-2 fs-lg d-flex" v-for="(item, index) in category.newsList" :key="index">
+                    <span class="text-info">[{{item.categoryName}}]</span>
+                    <span class="px-2">|</span>
+                    <span class="flex-1 text-dark-1 text-ellipsis pr-2">{{item.title}}</span>
+                    <span class="text-grey-1 fs-sm">{{item.createdAt | date}}</span>
                 </div>
-                <div class="nav-item">
-                    <div class="nav-link">新闻</div>
-                </div>
-                <div class="nav-item">
-                    <div class="nav-link">公告</div>
-                </div>
-                <div class="nav-item">
-                    <div class="nav-link">活动</div>
-                </div>
-                <div class="nav-item">
-                    <div class="nav-link">赛事</div>
-                </div>
-            </div>
-            <div class="pt-3">
-                <div class="swiper-container">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide" v-for="n in 5" :key="n">
-                            <div class="py-2" v-for="n in 5" :key="n">
-                                <span>[新闻]</span>
-                                <span>|</span>
-                                <span>7月6日抢先服不停机优化公告</span>
-                                <span>06/02</span>
-                            </div>
-                        </div>
+            </template>
+        </m-list-card>
+
+        <m-list-card icon="iconcard-hero" title="英雄列表" :categories="heroList">
+            <!-- // 父组件拿子组件中slot内容 -->
+            <template #items="{category}">
+                <div class="d-flex flex-wrap" style="margin: 0 -0.5rem;">
+                    <div class="p-2 text-center"
+                        style="width: 20%"
+                        v-for="(item, index) in category.heroList" :key="index">
+                        <img :src="item.avatar" alt="avatar" class="w-100">
+                        <div>{{item.name}}</div>
                     </div>
                 </div>
-            </div>
-        </m-card>
-        <m-card icon="conmap6" title="英雄列表">
-            <div class="nav jc-between">
-                <div class="nav-item active">
-                    <div class="nav-link">热门</div>
-                </div>
-                <div class="nav-item">
-                    <div class="nav-link">新闻</div>
-                </div>
-                <div class="nav-item">
-                    <div class="nav-link">公告</div>
-                </div>
-                <div class="nav-item">
-                    <div class="nav-link">活动</div>
-                </div>
-                <div class="nav-item">
-                    <div class="nav-link">赛事</div>
-                </div>
-            </div>
-            <div class="pt-3">
-                <div class="swiper-container">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide" v-for="n in 5" :key="n">
-                            <div class="py-2" v-for="n in 5" :key="n">
-                                <span>[新闻]</span>
-                                <span>|</span>
-                                <span>7月6日抢先服不停机优化公告</span>
-                                <span>06/02</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </m-card>
+            </template>
+        </m-list-card>
+
     </div>
 </template>
 <script>
+import dayjs from 'dayjs'
 import MCard from '@/components/Card.vue'
+import MListCard from '@/components/ListCard.vue'
 import Swiper from 'swiper'
 import 'swiper/dist/css/swiper.css'
 
@@ -128,14 +90,26 @@ export default {
                 { name: '公告', value: '3'},
                 { name: '活动', value: '4'},
                 { name: '赛事', value: '5'},
-            ]
+            ],
+            newsList: [],
+            heroList: []
         }
     },
     components: {
-        MCard
+        MCard,
+        MListCard
     },
     computed: {
 
+    },
+    created () {
+        this.handleGetNewsCats()
+        this.handleGetHeroCats()
+    },
+    filters: {
+        date(val) {
+            return dayjs(val).format('MM/DD')
+        }
     },
     mounted () {
         new Swiper ('.swiper-container', {
@@ -145,6 +119,24 @@ export default {
                 el: '.swiper-pagination',
             }
         })
+    },
+    methods: {
+        async handleGetNewsCats() {
+            try {
+                const res = await this.$http.get('news/list')
+                this.newsList = res
+            } catch (error) {
+                console.log('错误信息:', error)
+            }
+        },
+        async handleGetHeroCats() {
+            try {
+                const res = await this.$http.get('heroes/list')
+                this.heroList = res
+            } catch (error) {
+                console.log('错误信息:', error)
+            }
+        },
     }
 }
 </script>

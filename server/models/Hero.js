@@ -42,6 +42,6 @@ const schema = new mongoose.Schema({
     }]
 })
 
-const Hero = mongoose.model('Hero', schema)
+const Hero = mongoose.model('Hero', schema, 'heroes')
 
 module.exports = Hero

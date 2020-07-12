@@ -1,3 +1,5 @@
+const path = require('path')
+
 module.exports = app => {
     const mongoose = require('mongoose')
     mongoose.set('useFindAndModify', false)
@@ -5,4 +7,7 @@ module.exports = app => {
         useNewUrlParser: true,
         useUnifiedTopology: true
     })
+
+
+    require('require-all')(path.join(__dirname, '/../models'))
 }

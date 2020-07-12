@@ -41,6 +41,12 @@ a {
         text-align: $var;
     }
 }
+.text-ellipsis {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 
 // font size
 @each $sizeKey, $size in $font-sizes {

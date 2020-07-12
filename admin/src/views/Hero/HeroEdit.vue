@@ -222,18 +222,8 @@ export default {
             }
             return isLt5M;
         },
-        handleReset() {
-            for (let key in this.heroForm) {
-                this.heroForm[key] = "";
-            }
-        },
         handleBack() {
             this.$router.go(-1);
-        }
-    },
-    watch: {
-        $route: function() {
-            if (!this.id) this.handleReset();
         }
     }
 };

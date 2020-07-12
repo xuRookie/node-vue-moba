@@ -72,18 +72,8 @@ export default {
                 this.$message.error(message || error.statusText || '保存失败')
             }
         },
-        handleReset() {
-            for (let key in this.modelForm) {
-                this.modelForm[key] = ''
-            }
-        },
         handleBack() {
             this.$router.go(-1)
-        }
-    },
-    watch: {
-        '$route': function() {
-            if (!this.id) this.handleReset()
         }
     }
 }

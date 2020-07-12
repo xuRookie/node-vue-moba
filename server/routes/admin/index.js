@@ -25,7 +25,7 @@ module.exports = (app) => {
         if (req.modleName === 'Category') {
             queryOptions.populate = 'parent'
         }
-        const result = await req.Model.find().setOptions(queryOptions).limit(10)
+        const result = await req.Model.find().setOptions(queryOptions).limit(100)
         res.send(result)
     })
     // 资源详情
@@ -41,10 +41,15 @@ module.exports = (app) => {
         res.send(model)
     })
     // 修改资源
-    router.put('/', async (req, res) => {
+    router.put('/', async (req, res, next) => {
         // const model = await Category.findOneAndUpdate({_id: req.body._id}, {$set: {name: req.body.name, parent: req.body.parent}})
-        const model = await req.Model.findByIdAndUpdate(req.body._id, req.body)
-        res.send(model)
+        console.log(req.body)
+        try {
+            const model = await req.Model.findByIdAndUpdate(req.body._id, req.body)
+            res.send(model)
+        } catch (error) {
+            next(error)
+        }
     })
     // 删除资源
     router.delete('/:id', async (req, res) => {

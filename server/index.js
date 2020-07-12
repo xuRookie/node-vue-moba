@@ -17,7 +17,7 @@ app.use('/uploads', express.static(__dirname + '/uploads'))
 // });
 // 跨域
 app.use(require('cors')({
-    origin: 'http://localhost:8300',
+    origin: ['http://localhost:8300', 'http://192.168.101.105:8330'],
     allowedHeaders: ['Content-Type','Content-Length','Authorization','Accept','X-Requested-With'],
     methods: ['PUT','POST','GET','DELETE','OPTIONS'],
     credentials: true
@@ -27,6 +27,7 @@ app.use(express.json())
 
 require('./plugins/db')(app)
 require('./routes/admin')(app)
+require('./routes/web')(app)
 
 // 错误处理
 app.use(async (err, req, res, next) => {

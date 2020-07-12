@@ -9,6 +9,8 @@ const schema = new mongoose.Schema({
         ref: 'Category'
     }],
     body: { type: String }
+}, {
+    timestamps: true
 })
 
 const Article = mongoose.model('Article', schema)

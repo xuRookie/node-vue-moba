@@ -105,18 +105,8 @@ export default {
                 this.$message.error(message || error.statusText || '文章保存失败')
             }
         },
-        handleReset() {
-            for (let key in this.articleForm) {
-                this.articleForm[key] = ''
-            }
-        },
         handleBack() {
             this.$router.go(-1)
-        }
-    },
-    watch: {
-        '$route': function() {
-            if (!this.id) this.handleReset()
         }
     }
 }
